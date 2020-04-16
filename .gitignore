@@ -1,0 +1,6 @@
+*.dll
+*.cache
+*.exe
+*.pdb
+debug/
+bin/
