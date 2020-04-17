@@ -15,14 +15,19 @@ namespace KafkaProducer
         {
             var conf = new ProducerConfig
             {
-                BootstrapServers = "localhost:9092",
-                LingerMs = 2,
+                BootstrapServers = "localhost:9093",
+                LingerMs = 0,
                 QueueBufferingMaxKbytes = 1048576,
                  EnableSslCertificateVerification = true,
-             //   Debug="msg"
+                 SecurityProtocol = SecurityProtocol.Ssl,
+                 SslCaLocation = "C:\\Projects\\keys\\cert-signed",
+                 //SslCertificateLocation = "C:\\Projects\\kafka_repo\\keys\\pub.pem",
+                 //SslKeyLocation= "C:\\Projects\\kafka_repo\\keys\\pri.key",
+                 //SslKeyPassword = "password123",
+                //   Debug="msg"
                 //QueueBufferingMaxMessages = 10000,
-               // BatchNumMessages = 1,
-            //  Acks = Acks.All
+                // BatchNumMessages = 1,
+                //  Acks = Acks.All
             };
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data.dat");
             String info = File.ReadAllText(filePath);
@@ -40,8 +45,8 @@ namespace KafkaProducer
                     try
                     {
                         p.Produce("my-topic", new Message<Null, string> { Value = info }, handler);
-                        if(i % 50 == 0)
-                            p.Flush();
+                        //if(i % 50 == 0)
+                        //    p.Flush();
                     }
                     catch (Exception ex)
                     {

@@ -15,24 +15,27 @@ namespace KafkaConsumer
             var conf = new ConsumerConfig
             {
                 GroupId = "test-consumer-group",
-                BootstrapServers = "localhost:9092",
-                StatisticsIntervalMs = 1200000,
+                BootstrapServers = "localhost:9093",
+                StatisticsIntervalMs = 120000,
               //  QueuedMinMessages = 1000,
                 FetchWaitMaxMs = 5,
                 FetchErrorBackoffMs = 10,
                 EnableAutoCommit = false,
                 SocketReceiveBufferBytes = 1048576,
-               // Debug="consumer,topic",
-               // AutoCommitIntervalMs = 2,
+                SecurityProtocol = SecurityProtocol.Ssl,
+                EnableSslCertificateVerification = true,
+                SslCaLocation = "C:\\Projects\\keys\\cert-signed",
+                // Debug="consumer,topic",
+                // AutoCommitIntervalMs = 2,
                 // Note: The AutoOffsetReset property determines the start offset in the event
                 // there are not yet any committed offsets for the consumer group for the
                 // topic/partitions of interest. By default, offsets are committed
                 // automatically, so in this example, consumption will only start from the
                 // earliest message in the topic 'my-topic' the first time you run the program.
-                AutoOffsetReset = AutoOffsetReset.Earliest
+              //  AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
-            var commitPeriod = 5; // in ms ( for manual commit operation )
+            var commitPeriod = 1; // in ms ( for manual commit operation )
 
             using (var c = new ConsumerBuilder<Ignore, string>(conf)
                 .SetStatisticsHandler((_, json) => Console.WriteLine($"Statistics: {json}"))
