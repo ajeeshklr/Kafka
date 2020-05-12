@@ -50,22 +50,20 @@ namespace KafkaProducer.Sample
                 try
                 {
                     var timeInUTC = DateTime.UtcNow;
-                    var combinedString = string.Format("{0}#{1}", base64String, timeInUTC.ToFileTimeUtc());
-
                     // Encrypt data using AES
 
                     string dataToEncrypt;
                     if (i == 0)
                     {
-                        dataToEncrypt = b64StartMessage;
+                        dataToEncrypt = string.Format("{0}#{1}", b64StartMessage, timeInUTC.ToFileTimeUtc()) ;
                     }
                     else if (i == count - 1)
                     {
-                        dataToEncrypt = b64EndMessage;
+                        dataToEncrypt = string.Format("{0}#{1}", b64EndMessage, timeInUTC.ToFileTimeUtc());
                     }
                     else
                     {
-                        dataToEncrypt = combinedString;
+                        dataToEncrypt = string.Format("{0}#{1}", base64String, timeInUTC.ToFileTimeUtc());
                     }
                     //var encryptedValue = cutilEncrypt.EncryptData(dataToEncrypt);
                     var message = EncryptMessage(dataToEncrypt);//  String.Format("{0}#{1}", messageKey, Convert.ToBase64String(encryptedValue));
