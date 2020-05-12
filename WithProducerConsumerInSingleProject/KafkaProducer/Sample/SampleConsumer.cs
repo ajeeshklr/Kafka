@@ -46,6 +46,7 @@ namespace KafkaProducer.Sample
             var base64String = DecryptEncodedData(data);                
             var values = base64String.Split("#".ToCharArray());
             var actualData = Convert.FromBase64String(values[0]);// Convert.FromBase64String(base64String);
+            var producedTime = long.Parse(values[1]);
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
@@ -85,6 +86,11 @@ namespace KafkaProducer.Sample
                 {
                     totalMessageAboveThreshold++;
                 }
+            }
+
+            if(producedTime != cr.Message.Timestamp.UtcDateTime.ToFileTimeUtc())
+            {
+                Console.WriteLine($"Difference found in timestamp produced and consumed. Produced at {producedTime}, as per consumer produced time {cr.Message.Timestamp.UtcDateTime.ToFileTimeUtc()}");
             }
 
             OnConsumed?.Invoke(cr, this);

@@ -32,28 +32,15 @@ namespace KafkaProducer.Sample
             var b64EndMessage = Convert.ToBase64String(endMessageBytes);
 
             var base64String = Convert.ToBase64String(info);
-            var timeInUTC = DateTime.UtcNow.ToFileTimeUtc().ToString();
-            var combinedString = System.String.Format("{0}#{1}", base64String, timeInUTC);
 
             var key = cutilEncrypt.Key;
             var iv = cutilEncrypt.IV;
-
-
-            // Encrypt key and iv using RSA
-            //var encryptedK = Convert.ToBase64String(cutilEncrypt.Encrypt(key), System.Base64FormattingOptions.None);
-            //var encryptedIV = Convert.ToBase64String(cutilEncrypt.Encrypt(iv), System.Base64FormattingOptions.None);
-
-            //var messageKey = string.Format("{0}:{1}", encryptedK, encryptedIV);
-
-
 
             Action<DeliveryReport<string, string>> handler = r =>
            Console.WriteLine(!r.Error.IsError
                ? $"Delivered message to {r.TopicPartitionOffset}"
                : $"Delivery Error: {r.Error.Reason}");
             var count = 10;
-
-
 
             var startTime = DateTime.Now.Ticks;
             producerDelay = messagesPerSecond > 0 ? 1000 / messagesPerSecond : 0;
@@ -62,6 +49,9 @@ namespace KafkaProducer.Sample
             {
                 try
                 {
+                    var timeInUTC = DateTime.UtcNow;
+                    var combinedString = string.Format("{0}#{1}", base64String, timeInUTC.ToFileTimeUtc());
+
                     // Encrypt data using AES
 
                     string dataToEncrypt;
@@ -90,12 +80,10 @@ namespace KafkaProducer.Sample
                     var m = new Message<string, string>() {
                         Key = uid,
                         Value = message,
-                        Timestamp = new Timestamp(DateTime.UtcNow)                        
+                        Timestamp = new Timestamp(timeInUTC)
                     };
 
                     producer.Produce(m);
-
-                  //  Console.WriteLine($"Message Produced time for - {uid} is {m.Timestamp.UtcDateTime.ToFileTimeUtc()}");
 
                     Thread.Sleep(producerDelay);
                 }
@@ -105,7 +93,6 @@ namespace KafkaProducer.Sample
                     Thread.Sleep(5000);
                 }
             }
-
 
             var endTime = DateTime.Now.Ticks;
             var totalTimeTaken = (endTime - startTime) / TimeSpan.TicksPerMillisecond;

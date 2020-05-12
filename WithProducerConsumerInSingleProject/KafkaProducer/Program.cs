@@ -75,11 +75,11 @@ namespace KafkaProducer
 
         private static void OnResponseFromConsumerReceived(ConsumeResult<string,string> cr, BaseSampleConsumer consumer)
         {
-            var fileTime = cr.Message.Timestamp.UtcDateTime.ToFileTimeUtc();
+            var producedTime = cr.Message.Timestamp.UtcDateTime.ToFileTimeUtc();
             // Create a sample response and send to the originator of the message.
-            Console.WriteLine($"Message received at OnResponseFromConsumerReceived. Created time for {cr.Message.Key} is {cr.Message.Timestamp.UtcDateTime.ToFileTimeUtc()}");
+            //Console.WriteLine($"Message received at OnResponseFromConsumerReceived. Created time for {cr.Message.Key} is {cr.Message.Timestamp.UtcDateTime.ToFileTimeUtc()}");
 
-            responseProducer.ProduceMessage(cr.Message.Key, cr.Message.Timestamp.UtcDateTime.ToFileTimeUtc().ToString());
+            responseProducer.ProduceMessage(cr.Message.Key, producedTime.ToString());
 
         }
         private static void OnResultAtProducerReceived(ConsumeResult<string,string> cr, BaseSampleConsumer consumer)
